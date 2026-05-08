@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pradu Estimator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="widget">
+      <h2>Estimated Cost to Build</h2>
+      <div class="topTotal"><input id="totalTop" readonly /></div>
+      <p class="caption">CA - Agoura Hills - 554 Sq Ft - Floorplan - Elevation</p>
+
+      <div class="row">
+        <div>
+          <label>Square Feet</label>
+          <input class="greyinput" id="sqft" type="number" value="554" readonly />
+
+          <label>Jurisdiction</label>
+          <input class="greyinput" value="Agoura Hills" readonly />
+
+          <label>Estimated Cost of Permit</label>
+          <input class="greyinput" id="permitCost" readonly />
+
+          <label>Estimated Cost of Site, Foundation, and Utilities Connection</label>
+          <select id="foundationCondition" onchange="calculate()">
+            <option value="Low">Low</option>
+            <option value="Probable">Probable</option>
+            <option value="Median">Median</option>
+            <option value="Higher">Higher</option>
+            <option value="Unusual Conditions">Unusual Conditions</option>
+          </select>
+
+          <label>Slab or Floor Joist</label>
+          <select id="slabType" onchange="calculate()">
+            <option value="Slab">Slab</option>
+            <option value="Floor Joist">Floor Joist</option>
+          </select>
+
+          <label>2x4 or 2x6 Exterior Walls</label>
+          <select id="wallType" onchange="calculate()">
+            <option value="2x4">2x4 Exterior Studs</option>
+            <option value="2x6">2x6 Exterior Studs</option>
+          </select>
+
+          <label>Finishing Material Level</label>
+          <select id="finishType" onchange="calculate()">
+            <option value="Minimal Budget">Minimal Budget</option>
+            <option value="Modest">Modest</option>
+            <option value="Average">Average</option>
+            <option value="Premium">Premium</option>
+            <option value="Designer">Designer</option>
+          </select>
+          <p class="note">
+            We provide a generic material shopping list that you can tailor to your budget
+          </p>
+        </div>
+
+        <div>
+          <label>State</label>
+          <input class="greyinput" value="CA" readonly />
+
+          <label>Permit Type</label>
+          <select id="permitType" onchange="updatePermit()">
+            <option value="PRADU">Permit-Ready ADU</option>
+            <option value="ADU">ADU</option>
+          </select>
+
+          <label>Time to gain Approval</label>
+          <input id="approvalTime" readonly />
+
+          <label>Estimated Cost of Foundation</label>
+          <input class="greyinput" id="foundationCost" readonly />
+
+          <label>Slab / Floor Joist Cost</label>
+          <input class="greyinput" id="slabCost" readonly />
+
+          <label>Cost of FrameUpNow Steel Skeleton (Frame &amp; Trusses)</label>
+          <input class="greyinput" id="wallCost" readonly />
+
+          <label>Estimated Cost of Finishing Materials</label>
+          <input class="greyinput" id="finishCost" readonly />
+        </div>
+      </div>
+
+      <label>Total Without Labor</label>
+      <input class="greyinput" id="totalWithoutLabor" readonly />
+
+      <div class="row">
+        <div>
+          <label>Labor Type</label>
+          <select id="laborType" onchange="calculate()">
+            <option value="DIY">DIY</option>
+            <option value="DIY & Sub">DIY &amp; Sub</option>
+            <option value="General">General</option>
+          </select>
+
+          <label>Add Fire Resistant Materials</label>
+          <select id="fireResistant" onchange="calculate()">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div>
+          <label>Labor Cost</label>
+          <input class="greyinput" id="laborCost" readonly />
+
+          <label>Fire Cost</label>
+          <input class="greyinput" id="fireCost" readonly />
+        </div>
+      </div>
+
+      <label>Total Cost Including Labor &amp; Adjustments</label>
+      <input class="greyinput highlightinput" id="totalCost" readonly />
+
+      <label>Adjust for Local Economy: <span id="economyValue">0%</span></label>
+      <input type="range" id="economyAdjustment" min="0" max="30" step="5" value="0" oninput="calculate()" />
+
+      <div class="row">
+        <div>
+          <label>Down Payment of Total Cost</label>
+          <select id="downPaymentPercent" onchange="calculate()">
+            <option value="5">5%</option>
+            <option value="10">10%</option>
+            <option value="15" selected>15%</option>
+            <option value="20">20%</option>
+            <option value="25">25%</option>
+            <option value="30">30%</option>
+            <option value="35">35%</option>
+            <option value="40">40%</option>
+            <option value="45">45%</option>
+            <option value="50">50%</option>
+            <option value="55">55%</option>
+            <option value="60">60%</option>
+            <option value="65">65%</option>
+            <option value="70">70%</option>
+            <option value="75">75%</option>
+            <option value="80">80%</option>
+          </select>
+
+          <label>Amount To Finance</label>
+          <input class="greyinput" id="financedAmount" readonly />
+
+          <label>Interest Rate</label>
+          <select id="interestRate" onchange="calculate()">
+            <option>3.00</option>
+            <option>3.50</option>
+            <option>4.00</option>
+            <option>4.50</option>
+            <option>5.00</option>
+            <option selected>5.50</option>
+            <option>6.00</option>
+            <option>6.50</option>
+            <option>7.00</option>
+            <option>7.50</option>
+            <option>8.00</option>
+            <option>8.50</option>
+            <option>9.00</option>
+            <option>9.50</option>
+            <option>10.00</option>
+          </select>
+        </div>
+        <div>
+          <label>Down Payment Amount</label>
+          <input class="greyinput" id="downPaymentAmount" readonly />
+
+          <label>Term in Years</label>
+          <select id="loanTerm" onchange="calculate()">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option selected>20</option>
+            <option>25</option>
+            <option>30</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Monthly Payment</label>
+      <input class="greyinput" id="monthlyPayment" readonly />
+
+      <h3 class="section-title">Shipping Calculator</h3>
+      <div class="row">
+        <div>
+          <label><b>Origin:</b> Our Warehouse — Benson, AZ 85602</label>
+
+          <label>Destination Address</label>
+          <input id="deliveryAddress" type="text" placeholder="Enter ZIP code and select from dropdown" autocomplete="off" />
+
+          <label>Linear Feet (based on Sq Ft)</label>
+          <input class="greyinput" id="linearFeet" readonly />
+
+          <label>Trailer Required</label>
+          <input class="greyinput" id="trailerSize" readonly />
+
+          <label>Distance</label>
+          <input class="greyinput" id="distanceMiles" readonly />
+
+          <label>Estimated Shipping Cost</label>
+          <input class="greyinput" id="shippingCost" readonly />
+
+          <p id="minimumNote" class="note hidden">Minimum shipping charge applied based on trailer count.</p>
+        </div>
+        <div>
+          <label>Delivery Map</label>
+          <div id="shipMap" class="ship-map"></div>
+        </div>
+      </div>
+
+      <button id="proceed" disabled>Proceed</button>
+    </div>
+    <script defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNdE2tsRW3yaX7Be-2_coF4oYPFyQ8s9I&libraries=places,marker,routes&v=weekly">
+    </script>
+    <script defer src="main.js"></script>
+  </body>
+</html>
