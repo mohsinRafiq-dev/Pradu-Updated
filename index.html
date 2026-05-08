@@ -4,196 +4,1172 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pradu Estimator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-      body {
-        background: #fafafa;
-        font-family: "Segoe UI", sans-serif;
-        display: flex;
-        justify-content: center;
-        padding: 40px;
+      :root {
+        --brand: #3e7a32;
+        --brand-dark: #1f3d18;
+        --brand-mid: #2f5e25;
+        --brand-bright: #5fa84e;
+        --brand-light: #e8f3e3;
+        --brand-glow: rgba(62, 122, 50, 0.22);
+        --ink: #0f1411;
+        --ink-soft: #4b5854;
+        --muted: #8a948f;
+        --line: #e7eae8;
+        --line-strong: #d4dad6;
+        --bg: #eef1ee;
+        --surface: #ffffff;
+        --surface-soft: #f7f9f7;
+        --surface-tint: #f3f7f1;
+        --danger: #c1392b;
+        --danger-bg: #fdecea;
+        --success: #147a00;
+        --success-bg: #d6f4d2;
+        --readonly-bg: #f1f4f2;
+        --shadow-card: 0 40px 80px -30px rgba(15, 40, 25, 0.25), 0 10px 24px -10px rgba(15, 40, 25, 0.10);
+        --shadow-soft: 0 8px 22px -10px rgba(15, 40, 25, 0.18);
+        --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
-      .greyinput {
-        background-color: rgb(213, 213, 213);
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+
+      body {
+        background:
+          radial-gradient(1200px 700px at 8% -10%, #d8ead2 0%, transparent 55%),
+          radial-gradient(900px 500px at 105% 5%, #e2efdc 0%, transparent 50%),
+          radial-gradient(800px 600px at 50% 110%, #e8f0e3 0%, transparent 60%),
+          var(--bg);
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+        color: var(--ink);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 48px 20px;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
       }
 
       .widget {
-        background: white;
-        padding: 30px;
+        position: relative;
+        background: var(--surface);
         width: 100%;
-        max-width: 800px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
+        max-width: 960px;
+        box-shadow: var(--shadow-card);
+        border-radius: 24px;
+        border: 1px solid rgba(15, 40, 25, 0.06);
+        overflow: hidden;
+      }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        position: relative;
+        padding: 32px 38px 36px;
+        background:
+          radial-gradient(700px 300px at 90% 0%, rgba(95, 168, 78, 0.45) 0%, transparent 60%),
+          radial-gradient(500px 250px at 0% 100%, rgba(95, 168, 78, 0.25) 0%, transparent 60%),
+          linear-gradient(135deg, #1f3d18 0%, #2f5e25 60%, #3e7a32 100%);
+        color: white;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(ellipse at top right, black 0%, transparent 70%);
+        mask-image: radial-gradient(ellipse at top right, black 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      .hero-top {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        z-index: 1;
+      }
+
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.75);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        padding: 6px 12px;
+        border-radius: 999px;
+        margin-bottom: 14px;
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+      }
+
+      .hero-eyebrow::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--brand-bright);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--brand-bright);
       }
 
       h2 {
-        font-size: 22px;
-        font-weight: bold;
-        text-align: left;
-        margin-bottom: 0px;
-        width: fit-content;
-      }
-
-      .topTotal {
-        text-align: right;
-        margin-top: -30px;
-      }
-
-      .topTotal input {
-        background-color: #3e7a32;
+        position: relative;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin: 0 0 10px;
         color: white;
-        font-weight: bold;
-        font-size: 18px;
-        border: none;
-        padding: 15px 20px;
-        border-radius: 6px;
-        width: fit-content;
-        text-align: center;
-        margin-right: 70px;
+        line-height: 1.15;
+        z-index: 1;
+        width: auto;
       }
 
       .caption {
-        font-size: 16px;
-        margin-bottom: 20px;
-        font-weight: bold;
-        font-size: 18px;
-        margin-top: 0;
+        position: relative;
+        font-size: 13px;
+        margin: 0;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        letter-spacing: 0.02em;
+        z-index: 1;
+      }
+
+      .topTotal {
+        position: relative;
+        z-index: 1;
+        flex-shrink: 0;
+        text-align: right;
+      }
+
+      .topTotal::before {
+        content: "Total Estimate";
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.65);
+        margin-bottom: 8px;
+      }
+
+      .topTotal input {
+        background: rgba(255, 255, 255, 0.08);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        color: white;
+        font-weight: 700;
+        font-size: 26px;
+        letter-spacing: -0.02em;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 14px 22px;
+        border-radius: 14px;
+        min-width: 220px;
+        text-align: center;
+        margin: 0;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), var(--shadow-inset);
+        cursor: default;
+        font-family: inherit;
+      }
+
+      /* ---------- BODY ---------- */
+      .body {
+        padding: 28px 38px 36px;
+        background: var(--surface);
+      }
+
+      .section {
+        position: relative;
+        padding: 22px 24px;
+        background: var(--surface-tint);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+
+      .section + .section { margin-top: 0; }
+
+      .section-title {
+        font-size: 11px;
+        font-weight: 700;
+        margin: 0 0 16px;
+        padding: 0;
+        border: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--brand-mid);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--brand);
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px var(--brand-glow);
       }
 
       .row {
         display: flex;
-        gap: 40px;
+        gap: 24px;
       }
 
       .row > div {
         flex: 1;
+        min-width: 0;
       }
 
       label {
-        font-size: 14px;
-        margin-top: 10px;
+        font-size: 11px;
+        margin-top: 14px;
         display: block;
-        font-weight: 500;
+        font-weight: 600;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
       }
 
-      input,
-      select {
+      label:first-child { margin-top: 0; }
+
+      input, select {
         width: 100%;
-        padding: 12px 10px;
-        margin-top: 4px;
-        margin-bottom: 10px;
-        font-size: 16px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
+        padding: 12px 14px;
+        margin-top: 6px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-family: inherit;
+        font-weight: 500;
+        color: var(--ink);
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: var(--surface);
         box-sizing: border-box;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        -webkit-appearance: none;
+        appearance: none;
       }
 
-      input[type="range"] {
-        padding: 0;
-        margin-top: 8px;
-        margin-bottom: 16px;
+      input:hover, select:hover { border-color: var(--line-strong); }
+
+      input:focus, select:focus {
+        outline: none;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 4px var(--brand-glow);
+      }
+
+      input[readonly] {
+        background-color: var(--readonly-bg);
+        color: var(--ink);
+        cursor: default;
+      }
+
+      input[readonly]:hover { border-color: var(--line); }
+
+      .greyinput {
+        background-color: var(--readonly-bg) !important;
+        font-weight: 600;
+      }
+
+      select {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1.5L6 6.5L11 1.5' stroke='%234b5854' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 36px;
         cursor: pointer;
-        accent-color: #3e7a32;
       }
 
       .note {
         font-size: 12px;
-        color: red;
+        color: var(--danger);
+        background: var(--danger-bg);
+        border: 1px solid #f5c5be;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin: 10px 0 0;
+        line-height: 1.4;
       }
 
-      .hidden {
-        display: none;
+      .hidden { display: none; }
+
+      /* ---------- HIGHLIGHT METRIC INPUTS ---------- */
+      #totalWithoutLabor,
+      .highlightinput {
+        color: var(--success) !important;
+        font-weight: 700;
+        background: linear-gradient(180deg, #ddf6d6, #cdf0c2) !important;
+        border: 1px solid #b9e3ad !important;
+        font-size: 18px;
+        padding: 14px 16px;
+        letter-spacing: -0.01em;
       }
 
-      button {
-        background-color: #3e7a32;
-        color: white;
-        padding: 10px 0;
-        margin-top: 12px;
-        width: 100%;
-        border: none;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 15px;
-        cursor: pointer;
+      #monthlyPayment {
+        color: var(--success) !important;
+        font-weight: 700;
+        background: linear-gradient(180deg, #ddf6d6, #cdf0c2) !important;
+        border: 1px solid #b9e3ad !important;
+        font-size: 18px;
+        padding: 14px 16px;
       }
 
       .status.green {
-        color: green;
-        font-weight: bold;
-        background-color: #d2f8d2;
+        color: var(--success) !important;
+        font-weight: 600;
+        background-color: var(--success-bg) !important;
+        border-color: #b9e3ad !important;
       }
 
       .status.red {
-        color: red;
-        font-weight: bold;
-        background-color: rgb(255, 222, 222);
+        color: var(--danger) !important;
+        font-weight: 600;
+        background-color: var(--danger-bg) !important;
+        border-color: #f5c5be !important;
       }
 
-      #totalWithoutLabor {
-        color: #147a00;
-        font-weight: bolder;
-        background-color: #d2f8d2;
+      /* ---------- RANGE SLIDER ---------- */
+      .slider-wrap {
+        margin-top: 8px;
+        padding: 4px 0 8px;
       }
 
-      .highlightinput {
-        color: #147a00;
-        background-color: #d2f8d2;
-        font-weight: bold;
+      .slider-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
       }
 
-      .section-title {
-        font-size: 18px;
-        font-weight: bold;
+      .slider-row label { margin: 0; }
+
+      #economyValue {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--brand), var(--brand-bright));
+        color: white;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        box-shadow: 0 4px 12px -4px var(--brand-glow);
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        padding: 0;
+        margin: 4px 0 4px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        cursor: pointer;
+      }
+
+      input[type="range"]:focus { outline: none; box-shadow: none; }
+
+      /* WebKit track */
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: 8px;
+        background: linear-gradient(90deg, var(--brand) 0%, var(--brand) var(--slider-fill, 0%), #d8ddda var(--slider-fill, 0%), #d8ddda 100%);
+        border-radius: 999px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 22px;
+        width: 22px;
+        background: white;
+        border: 3px solid var(--brand);
+        border-radius: 50%;
+        margin-top: -7px;
+        box-shadow: 0 4px 10px rgba(15, 40, 25, 0.25), 0 0 0 6px rgba(62, 122, 50, 0.0);
+        cursor: grab;
+        transition: box-shadow 0.15s ease, transform 0.1s ease;
+      }
+
+      input[type="range"]:hover::-webkit-slider-thumb {
+        box-shadow: 0 4px 12px rgba(15, 40, 25, 0.3), 0 0 0 6px rgba(62, 122, 50, 0.15);
+      }
+
+      input[type="range"]:active::-webkit-slider-thumb {
+        cursor: grabbing;
+        transform: scale(1.08);
+      }
+
+      /* Firefox */
+      input[type="range"]::-moz-range-track {
+        height: 8px;
+        background: #d8ddda;
+        border-radius: 999px;
+        border: none;
+      }
+
+      input[type="range"]::-moz-range-progress {
+        height: 8px;
+        background: var(--brand);
+        border-radius: 999px;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        height: 22px;
+        width: 22px;
+        background: white;
+        border: 3px solid var(--brand);
+        border-radius: 50%;
+        box-shadow: 0 4px 10px rgba(15, 40, 25, 0.25);
+        cursor: grab;
+      }
+
+      .slider-ticks {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+      }
+
+      /* ---------- BUTTON ---------- */
+      button {
+        background: linear-gradient(135deg, var(--brand-mid), var(--brand) 60%, var(--brand-bright));
+        color: white;
+        padding: 16px 0;
         margin-top: 24px;
-        margin-bottom: 4px;
-        border-top: 1px solid #e0e0e0;
-        padding-top: 16px;
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 15px;
+        font-family: inherit;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 14px 32px -12px var(--brand-glow), var(--shadow-inset);
+        transition: transform 0.12s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 36px -12px var(--brand-glow), var(--shadow-inset);
+      }
+
+      button:active:not(:disabled) { transform: translateY(0); }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      /* ---------- MAP ---------- */
+      .ship-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.05fr;
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .ship-grid > div { min-width: 0; }
+      .ship-grid-spaced { margin-top: 14px; }
+
+      .map-card {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #e8efe5;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow-soft);
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
       }
 
       .ship-map {
         width: 100%;
-        height: 270px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-bottom: 10px;
+        flex: 1;
+        min-height: 360px;
+        border: none;
+        border-radius: 0;
+        margin: 0;
         padding: 0;
+        display: block;
+        background: #e8efe5;
+      }
+
+      .map-overlay {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        z-index: 5;
+        background: rgba(255, 255, 255, 0.96);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(15, 40, 25, 0.08);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink);
+        box-shadow: 0 6px 16px -6px rgba(15, 40, 25, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .map-overlay .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--brand);
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px var(--brand-glow);
+        flex-shrink: 0;
+      }
+
+      .map-overlay .label-soft {
+        font-weight: 500;
+        color: var(--ink-soft);
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 11px;
+      }
+
+      /* origin label inside ship section */
+      .origin-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 13px;
+        color: var(--ink);
+        margin-top: 6px;
+      }
+
+      .origin-pill .pin {
+        width: 24px;
+        height: 24px;
+        background: var(--brand-light);
+        color: var(--brand-mid);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+
+      .origin-pill b {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+      }
+
+      /* ---------- HERO STAT CHIPS ---------- */
+      .hero-chips {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+        z-index: 1;
+      }
+
+      .hero-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: rgba(255, 255, 255, 0.92);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+      }
+
+      .hero-chip svg { opacity: 0.85; }
+
+      /* ---------- SECTION HEADER (with subtitle) ---------- */
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .section-head .section-title { margin: 0; }
+
+      .section-badge {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--ink-soft);
+        background: white;
+        border: 1px solid var(--line);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+
+      /* ---------- METRIC TILES (shipping stats) ---------- */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .stat-tile {
+        position: relative;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 14px;
+        transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .stat-tile:hover {
+        border-color: var(--brand-bright);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px -10px var(--brand-glow);
+      }
+
+      .stat-tile-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .stat-tile-icon {
+        width: 26px;
+        height: 26px;
+        background: var(--brand-light);
+        color: var(--brand-mid);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .stat-tile-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .stat-tile input {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent !important;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+        height: auto;
+      }
+
+      .stat-tile input:hover, .stat-tile input:focus {
+        background: transparent !important;
+        border: none;
+        box-shadow: none;
+      }
+
+      .stat-tile.accent {
+        background: linear-gradient(135deg, #e8f3e3 0%, #d6ebcc 100%);
+        border-color: #b9e3ad;
+      }
+
+      .stat-tile.accent .stat-tile-icon {
+        background: white;
+        color: var(--brand);
+      }
+
+      .stat-tile.accent input {
+        color: var(--success);
+        font-size: 22px;
+      }
+
+      /* ---------- ORIGIN/DESTINATION FLOW ---------- */
+      .od-flow {
+        display: grid;
+        grid-template-columns: 1fr auto 1.2fr;
+        gap: 12px;
+        align-items: stretch;
+        margin-top: 10px;
+        margin-bottom: 6px;
+      }
+
+      .od-card {
+        position: relative;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        min-height: 78px;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .od-card:hover {
+        border-color: var(--line-strong);
+      }
+
+      .od-card .od-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .od-card.origin .od-icon {
+        background: linear-gradient(135deg, var(--brand-mid), var(--brand));
+        color: white;
+        box-shadow: 0 6px 14px -6px var(--brand-glow);
+      }
+
+      .od-card.dest .od-icon {
+        background: var(--brand-light);
+        color: var(--brand-mid);
+        border: 1.5px dashed var(--brand-bright);
+      }
+
+      .od-card-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .od-card .od-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+      }
+
+      .od-card .od-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .od-card .od-sub {
+        font-size: 12px;
+        color: var(--ink-soft);
+        font-weight: 500;
+      }
+
+      .od-card.dest:focus-within {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 4px var(--brand-glow);
+      }
+
+      .od-card.dest input {
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent !important;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink);
+        width: 100%;
+        height: auto;
+        line-height: 1.3;
+      }
+
+      .od-card.dest input::placeholder {
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .od-card.dest input:hover,
+      .od-card.dest input:focus {
+        background: transparent !important;
+        box-shadow: none;
+        border: none;
+      }
+
+      .od-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--brand);
+        opacity: 0.55;
+      }
+
+      .od-arrow svg { width: 26px; height: 26px; }
+
+      /* ---------- GOOGLE PLACES AUTOCOMPLETE DROPDOWN ---------- */
+      .pac-container {
+        margin-top: 8px;
+        border-radius: 14px !important;
+        border: 1px solid var(--line) !important;
+        box-shadow: 0 20px 40px -12px rgba(15, 40, 25, 0.25), 0 4px 12px -4px rgba(15, 40, 25, 0.1) !important;
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif !important;
+        padding: 6px !important;
+        background: white !important;
+        overflow: hidden !important;
+      }
+
+      .pac-container::after {
+        display: none !important;
+      }
+
+      .pac-item {
+        padding: 10px 14px !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-size: 14px !important;
+        color: var(--ink) !important;
+        cursor: pointer !important;
+        line-height: 1.4 !important;
+        transition: background-color 0.12s ease;
+      }
+
+      .pac-item:hover,
+      .pac-item-selected,
+      .pac-item.pac-item-selected {
+        background-color: var(--brand-light) !important;
+      }
+
+      .pac-icon,
+      .pac-icon-marker {
+        display: none !important;
+      }
+
+      .pac-item-query {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: var(--ink) !important;
+        padding-right: 4px;
+      }
+
+      .pac-matched {
+        color: var(--brand-mid) !important;
+        font-weight: 700 !important;
+      }
+
+      .pac-item > span:not(.pac-item-query) {
+        font-size: 12px !important;
+        color: var(--ink-soft) !important;
+        font-weight: 500 !important;
+      }
+
+      /* ---------- DESTINATION INPUT (full input version) ---------- */
+      .dest-input-wrap {
+        position: relative;
+        margin-top: 6px;
+      }
+
+      .dest-input-wrap input {
+        padding-left: 40px;
+        margin-top: 0;
+      }
+
+      .dest-input-wrap .dest-icon {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        transform: translateY(-50%);
+        color: var(--brand);
+        pointer-events: none;
+      }
+
+      /* ---------- MAP ROUTE INFO CARD ---------- */
+      .route-info {
+        position: absolute;
+        bottom: 14px;
+        left: 14px;
+        right: 14px;
+        z-index: 5;
+        background: rgba(255, 255, 255, 0.96);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(15, 40, 25, 0.08);
+        border-radius: 12px;
+        padding: 12px 14px;
+        box-shadow: 0 10px 24px -10px rgba(15, 40, 25, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        pointer-events: none;
+      }
+
+      .route-info-stat {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .route-info-stat:not(:last-child) {
+        border-right: 1px solid var(--line);
+        padding-right: 14px;
+      }
+
+      .route-info-stat .ri-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
         display: block;
       }
 
+      .route-info-stat .ri-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .route-info-stat .ri-value.accent { color: var(--brand-mid); }
+
+      /* ---------- MONTHLY PAYMENT FEATURE ---------- */
+      .payment-feature {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 16px;
+        align-items: center;
+        background: linear-gradient(135deg, #1f3d18 0%, #2f5e25 100%);
+        border-radius: 14px;
+        padding: 18px 22px;
+        margin-top: 18px;
+        color: white;
+        box-shadow: 0 16px 32px -16px rgba(15, 40, 25, 0.5);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .payment-feature::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(95, 168, 78, 0.4), transparent 70%);
+        pointer-events: none;
+      }
+
+      .payment-feature-icon {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+      }
+
+      .payment-feature-text {
+        z-index: 1;
+      }
+
+      .payment-feature-text .pf-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .payment-feature-text .pf-sub {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 2px;
+      }
+
+      .payment-feature input {
+        background: transparent !important;
+        border: none;
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        text-align: right;
+        padding: 0;
+        margin: 0;
+        letter-spacing: -0.02em;
+        z-index: 1;
+        width: auto;
+        min-width: 160px;
+      }
+
+      .payment-feature input:hover, .payment-feature input:focus {
+        background: transparent !important;
+        border: none;
+        box-shadow: none;
+      }
+
+      /* ---------- TRAILER VISUALIZATION ---------- */
+      .trailer-visual {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 6px;
+      }
+
+      .trailer-visual .truck-icon {
+        color: var(--brand);
+        flex-shrink: 0;
+      }
+
+      /* ---------- RESPONSIVE ---------- */
       @media (max-width: 768px) {
-        body {
-          padding: 20px;
-        }
-        .topTotal {
-          text-align: center;
-          margin-top: 10px;
-          margin-bottom: 10px;
-        }
-        .topTotal input {
-          margin-right: 0;
-          width: 100%;
-        }
-        .row {
+        body { padding: 16px 12px; }
+        .widget { border-radius: 18px; }
+        .hero { padding: 24px 22px 28px; }
+        .body { padding: 22px 22px 28px; }
+        .section { padding: 18px 18px; }
+        .hero-top {
           flex-direction: column;
+          align-items: stretch;
+          gap: 18px;
+        }
+        .topTotal { text-align: left; }
+        .topTotal input { width: 100%; min-width: 0; font-size: 22px; }
+        h2 { font-size: 24px; }
+        .row { flex-direction: column; gap: 0; }
+        .row > div { width: 100%; }
+        .ship-grid { grid-template-columns: 1fr; }
+        .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+        .od-flow { grid-template-columns: 1fr; gap: 8px; }
+        .od-arrow { transform: rotate(90deg); padding: 2px 0; opacity: 0.4; }
+        .od-card { min-height: 70px; padding: 14px 16px; }
+        .payment-feature { padding: 16px 18px; gap: 12px; }
+        .payment-feature input { font-size: 22px; min-width: 0; }
+
+        /* Map: pull route-info out of absolute positioning so it doesn't cover the map */
+        .map-card {
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          gap: 10px;
+        }
+        .ship-map {
+          min-height: 320px;
+          border-radius: 14px;
+          border: 1px solid var(--line);
+          box-shadow: var(--shadow-soft);
+        }
+        .map-overlay {
+          top: 10px;
+          left: 10px;
+          padding: 8px 12px;
+          font-size: 11px;
+        }
+        .route-info {
+          position: static;
+          flex-direction: row;
           gap: 0;
+          padding: 12px 14px;
+          border-radius: 12px;
+          background: white;
+          border: 1px solid var(--line);
+          box-shadow: var(--shadow-soft);
+          -webkit-backdrop-filter: none;
+          backdrop-filter: none;
         }
-        .row > div {
-          width: 100%;
+        .route-info-stat {
+          padding: 0 10px;
+          text-align: center;
         }
-        .widget {
-          padding: 20px;
+        .route-info-stat:first-child { padding-left: 0; }
+        .route-info-stat:last-child { padding-right: 0; }
+        .route-info-stat:not(:last-child) {
+          border-right: 1px solid var(--line);
+          padding-right: 10px;
         }
+        .route-info-stat .ri-value { font-size: 13px; }
+      }
+
+      @media (max-width: 420px) {
+        .ship-map { min-height: 280px; }
+        .route-info-stat .ri-label { font-size: 9px; letter-spacing: 0.04em; }
+        .route-info-stat .ri-value { font-size: 12px; }
+        .stat-tile input { font-size: 16px; }
+        .stat-tile.accent input { font-size: 18px; }
       }
     </style>
   </head>
 
   <body>
     <div class="widget">
-      <h2>Estimated Cost to Build</h2>
-      <div class="topTotal"><input id="totalTop" readonly /></div>
-      <p class="caption">CA - Agoura Hills - 554 Sq Ft - Floorplan - Elevation</p>
+      <div class="hero">
+        <div class="hero-top">
+          <div>
+            <span class="hero-eyebrow">Pradu Estimator</span>
+            <h2>Estimated Cost to Build</h2>
+            <p class="caption">CA · Agoura Hills · Floorplan · Elevation</p>
+            <div class="hero-chips">
+              <span class="hero-chip">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+                554 sq ft
+              </span>
+              <span class="hero-chip">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+                Permit-Ready ADU
+              </span>
+              <span class="hero-chip">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Agoura Hills, CA
+              </span>
+            </div>
+          </div>
+          <div class="topTotal"><input id="totalTop" aria-label="Total estimated cost" title="Total estimated cost" readonly /></div>
+        </div>
+      </div>
 
+      <div class="body">
+
+      <div class="section">
+      <h3 class="section-title">Project Details</h3>
       <div class="row">
         <div>
           <label>Square Feet</label>
@@ -268,7 +1244,10 @@
 
       <label>Total Without Labor</label>
       <input class="greyinput" id="totalWithoutLabor" readonly />
+      </div>
 
+      <div class="section">
+      <h3 class="section-title">Labor &amp; Adjustments</h3>
       <div class="row">
         <div>
           <label>Labor Type</label>
@@ -296,9 +1275,20 @@
       <label>Total Cost Including Labor &amp; Adjustments</label>
       <input class="greyinput highlightinput" id="totalCost" readonly />
 
-      <label>Adjust for Local Economy: <span id="economyValue">0%</span></label>
-      <input type="range" id="economyAdjustment" min="0" max="30" step="5" value="0" oninput="calculate()" />
+      <div class="slider-wrap">
+        <div class="slider-row">
+          <label>Adjust for Local Economy</label>
+          <span id="economyValue">0%</span>
+        </div>
+        <input type="range" id="economyAdjustment" aria-label="Local economy adjustment" title="Local economy adjustment" min="0" max="30" step="5" value="0" oninput="calculate()" />
+        <div class="slider-ticks">
+          <span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span><span>25%</span><span>30%</span>
+        </div>
+      </div>
+      </div>
 
+      <div class="section">
+      <h3 class="section-title">Financing</h3>
       <div class="row">
         <div>
           <label>Down Payment of Total Cost</label>
@@ -359,38 +1349,122 @@
         </div>
       </div>
 
-      <label>Monthly Payment</label>
-      <input class="greyinput" id="monthlyPayment" readonly />
-
-      <h3 class="section-title">Shipping Calculator</h3>
-      <div class="row">
-        <div>
-          <label><b>Origin:</b> Our Warehouse — Benson, AZ 85602</label>
-
-          <label>Destination Address</label>
-          <input id="deliveryAddress" type="text" placeholder="Enter ZIP code and select from dropdown" autocomplete="off" />
-
-          <label>Linear Feet (based on Sq Ft)</label>
-          <input class="greyinput" id="linearFeet" readonly />
-
-          <label>Trailer Required</label>
-          <input class="greyinput" id="trailerSize" readonly />
-
-          <label>Distance</label>
-          <input class="greyinput" id="distanceMiles" readonly />
-
-          <label>Estimated Shipping Cost</label>
-          <input class="greyinput" id="shippingCost" readonly />
-
-          <p id="minimumNote" class="note hidden">Minimum shipping charge applied based on trailer count.</p>
+      <div class="payment-feature">
+        <div class="payment-feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h2M11 15h2"/></svg>
         </div>
-        <div>
-          <label>Delivery Map</label>
-          <div id="shipMap" class="ship-map"></div>
+        <div class="payment-feature-text">
+          <div class="pf-label">Monthly Payment</div>
+          <div class="pf-sub">Estimated principal &amp; interest</div>
+        </div>
+        <input id="monthlyPayment" aria-label="Monthly payment" readonly />
+      </div>
+      </div>
+
+      <div class="section">
+      <div class="section-head">
+        <h3 class="section-title">Shipping Calculator</h3>
+        <span class="section-badge">FrameUpNow Logistics</span>
+      </div>
+
+      <div class="od-flow">
+        <div class="od-card origin">
+          <div class="od-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 21V12h6v9"/></svg>
+          </div>
+          <div class="od-card-body">
+            <span class="od-label">Origin · Warehouse</span>
+            <span class="od-value">Benson, AZ 85602</span>
+            <span class="od-sub">FrameUpNow Logistics Hub</span>
+          </div>
+        </div>
+        <div class="od-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </div>
+        <div class="od-card dest">
+          <div class="od-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="od-card-body">
+            <span class="od-label">Destination</span>
+            <input id="deliveryAddress" type="text" placeholder="Enter ZIP code or city…" autocomplete="off" />
+          </div>
         </div>
       </div>
 
+      <div class="ship-grid ship-grid-spaced">
+        <div>
+          <div class="stat-grid">
+            <div class="stat-tile">
+              <div class="stat-tile-head">
+                <span class="stat-tile-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4"/></svg>
+                </span>
+                <span class="stat-tile-label">Linear Feet</span>
+              </div>
+              <input class="greyinput" id="linearFeet" aria-label="Linear feet" readonly />
+            </div>
+
+            <div class="stat-tile">
+              <div class="stat-tile-head">
+                <span class="stat-tile-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h4l3 3v5h-7"/><circle cx="6" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg>
+                </span>
+                <span class="stat-tile-label">Trailer Required</span>
+              </div>
+              <input class="greyinput" id="trailerSize" aria-label="Trailer required" readonly />
+            </div>
+
+            <div class="stat-tile">
+              <div class="stat-tile-head">
+                <span class="stat-tile-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <span class="stat-tile-label">Distance</span>
+              </div>
+              <input class="greyinput" id="distanceMiles" aria-label="Distance" readonly />
+            </div>
+
+            <div class="stat-tile accent">
+              <div class="stat-tile-head">
+                <span class="stat-tile-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                </span>
+                <span class="stat-tile-label">Shipping Cost</span>
+              </div>
+              <input class="greyinput" id="shippingCost" aria-label="Shipping cost" readonly />
+            </div>
+          </div>
+
+          <p id="minimumNote" class="note hidden">Minimum shipping charge applied based on trailer count.</p>
+        </div>
+
+        <div class="map-card">
+          <div class="map-overlay">
+            <span class="dot"></span>
+            <span>Benson, AZ <span class="label-soft">· Origin</span></span>
+          </div>
+          <div id="shipMap" class="ship-map"></div>
+          <div class="route-info">
+            <div class="route-info-stat">
+              <span class="ri-label">Distance</span>
+              <span class="ri-value" id="routeDistance">—</span>
+            </div>
+            <div class="route-info-stat">
+              <span class="ri-label">Trailer</span>
+              <span class="ri-value" id="routeTrailer">—</span>
+            </div>
+            <div class="route-info-stat">
+              <span class="ri-label">Total</span>
+              <span class="ri-value accent" id="routeTotal">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
       <button id="proceed" disabled>Proceed</button>
+      </div>
     </div>
     <script defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNdE2tsRW3yaX7Be-2_coF4oYPFyQ8s9I&libraries=places,marker,routes&v=weekly">
@@ -553,6 +1627,10 @@
         const fmt = (a) =>
           `$${a.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+        const routeDistanceEl = document.getElementById("routeDistance");
+        const routeTrailerEl = document.getElementById("routeTrailer");
+        const routeTotalEl = document.getElementById("routeTotal");
+
         if (lastDistanceMiles > 0) {
           const baseCost = lastDistanceMiles * trailerConfig.rate;
           const minCharge = trailerConfig.trailerCount * trailerConfig.minChargePerTrailer;
@@ -561,10 +1639,18 @@
           distanceEl.value = `${lastDistanceMiles.toFixed(1)} miles`;
           shippingEl.value = fmt(finalCost);
           minNoteEl.classList.toggle("hidden", baseCost >= minCharge);
+
+          if (routeDistanceEl) routeDistanceEl.textContent = `${lastDistanceMiles.toFixed(0)} mi`;
+          if (routeTrailerEl) routeTrailerEl.textContent = trailerConfig.label;
+          if (routeTotalEl) routeTotalEl.textContent = fmt(finalCost);
         } else {
           distanceEl.value = "";
           shippingEl.value = "";
           minNoteEl.classList.add("hidden");
+
+          if (routeDistanceEl) routeDistanceEl.textContent = "—";
+          if (routeTrailerEl) routeTrailerEl.textContent = trailerConfig.label;
+          if (routeTotalEl) routeTotalEl.textContent = "—";
         }
       }
 
@@ -668,9 +1754,22 @@
         );
       }
 
+      function updateSliderFill() {
+        const el = document.getElementById('economyAdjustment');
+        if (!el) return;
+        const min = parseFloat(el.min) || 0;
+        const max = parseFloat(el.max) || 100;
+        const val = parseFloat(el.value) || 0;
+        const pct = ((val - min) / (max - min)) * 100;
+        el.style.setProperty('--slider-fill', pct + '%');
+      }
+
       window.addEventListener('DOMContentLoaded', () => {
         updatePermit();
         calculate();
+        updateSliderFill();
+        const slider = document.getElementById('economyAdjustment');
+        if (slider) slider.addEventListener('input', updateSliderFill);
         initMap();
       });
     </script>
