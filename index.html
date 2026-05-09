@@ -518,7 +518,7 @@
       .map-overlay {
         position: absolute;
         top: 14px;
-        left: 14px;
+        right: 14px;
         z-index: 5;
         background: rgba(255, 255, 255, 0.96);
         -webkit-backdrop-filter: blur(10px);
@@ -1100,7 +1100,7 @@
         }
         .map-overlay {
           top: 10px;
-          left: 10px;
+          right: 10px;
           padding: 8px 12px;
           font-size: 11px;
         }
@@ -1146,19 +1146,19 @@
           <div>
             <span class="hero-eyebrow">Pradu Estimator</span>
             <h2>Estimated Cost to Build</h2>
-            <p class="caption">CA · Agoura Hills · Floorplan · Elevation</p>
+            <p class="caption" id="heroCaption">CA · Agoura Hills · Floorplan · Elevation</p>
             <div class="hero-chips">
               <span class="hero-chip">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
-                554 sq ft
+                <span id="heroChipSqft">554 sq ft</span>
               </span>
               <span class="hero-chip">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
-                Permit-Ready ADU
+                <span id="heroChipPermit">Permit-Ready ADU</span>
               </span>
               <span class="hero-chip">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                Agoura Hills, CA
+                <span id="heroChipLocation">Agoura Hills, CA</span>
               </span>
             </div>
           </div>
@@ -1176,7 +1176,7 @@
           <input class="greyinput" id="sqft" type="number" value="554" readonly />
 
           <label>Jurisdiction</label>
-          <input class="greyinput" value="Agoura Hills" readonly />
+          <input class="greyinput" id="jurisdiction" value="Agoura Hills" readonly />
 
           <label>Estimated Cost of Permit</label>
           <input class="greyinput" id="permitCost" readonly />
@@ -1217,7 +1217,7 @@
 
         <div>
           <label>State</label>
-          <input class="greyinput" value="CA" readonly />
+          <input class="greyinput" id="stateField" value="CA" readonly />
 
           <label>Permit Type</label>
           <select id="permitType" onchange="updatePermit()">
@@ -1400,7 +1400,7 @@
                 <span class="stat-tile-icon">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4"/></svg>
                 </span>
-                <span class="stat-tile-label">Linear Feet</span>
+                <span class="stat-tile-label">Linear Feet (Based on sq ft)</span>
               </div>
               <input class="greyinput" id="linearFeet" aria-label="Linear feet" readonly />
             </div>
@@ -1606,7 +1606,33 @@
         document.getElementById("financedAmount").value = fmt(financed);
         document.getElementById("monthlyPayment").value = fmt(calculateMonthlyPayment(financed, interest, years));
 
+        updateHeroChips();
         updateShipping();
+      }
+
+      function updateHeroChips() {
+        const sqft = parseFloat(document.getElementById("sqft").value) || 0;
+        const jurisdiction = (document.getElementById("jurisdiction")?.value || "").trim();
+        const state = (document.getElementById("stateField")?.value || "").trim();
+        const permitType = document.getElementById("permitType").value;
+        const permitLabel = permitType === "PRADU" ? "Permit-Ready ADU" : "ADU";
+
+        const sqftEl = document.getElementById("heroChipSqft");
+        const permitEl = document.getElementById("heroChipPermit");
+        const locationEl = document.getElementById("heroChipLocation");
+        const captionEl = document.getElementById("heroCaption");
+
+        if (sqftEl) sqftEl.textContent = `${sqft.toLocaleString()} sq ft`;
+        if (permitEl) permitEl.textContent = permitLabel;
+        if (locationEl) {
+          locationEl.textContent = jurisdiction && state
+            ? `${jurisdiction}, ${state}`
+            : (jurisdiction || state || "");
+        }
+        if (captionEl) {
+          const parts = [state, jurisdiction, "Floorplan", "Elevation"].filter(Boolean);
+          captionEl.textContent = parts.join(" · ");
+        }
       }
 
       function updateShipping() {
@@ -1638,6 +1664,10 @@
 
           distanceEl.value = `${lastDistanceMiles.toFixed(1)} miles`;
           shippingEl.value = fmt(finalCost);
+          const trailerWord = trailerConfig.trailerCount === 1 ? "trailer" : "trailers";
+          const perTrailer = `$${trailerConfig.minChargePerTrailer.toLocaleString()}`;
+          const totalMin = `$${minCharge.toLocaleString()}`;
+          minNoteEl.textContent = `Minimum shipping charge applied: ${perTrailer} × ${trailerConfig.trailerCount} ${trailerWord} = ${totalMin}.`;
           minNoteEl.classList.toggle("hidden", baseCost >= minCharge);
 
           if (routeDistanceEl) routeDistanceEl.textContent = `${lastDistanceMiles.toFixed(0)} mi`;
@@ -1694,7 +1724,20 @@
 
           map = new Map(mapDiv, {
             center: { lat: WAREHOUSE_LOCATION.lat, lng: WAREHOUSE_LOCATION.lng },
-            zoom: 6
+            zoom: 6,
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+              position: google.maps.ControlPosition.TOP_LEFT
+            },
+            streetViewControl: true,
+            streetViewControlOptions: {
+              position: google.maps.ControlPosition.RIGHT_CENTER
+            },
+            fullscreenControl: false,
+            zoomControl: true,
+            zoomControlOptions: {
+              position: google.maps.ControlPosition.LEFT_TOP
+            }
           });
 
           directionsService = new DirectionsService();
